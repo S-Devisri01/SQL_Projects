@@ -1,5 +1,6 @@
               -- Students Data Management System --
-              
+
+
 create database Students_Data_Management_System;
 
 use Students_Data_Management_System;              
