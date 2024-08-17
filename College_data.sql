@@ -4,7 +4,8 @@ create schema College_data;
 
 use College_data;
 
--- Create Tables
+-- List of Tables
+
 -- 1. Department
 CREATE TABLE Department (
     Department_ID INT PRIMARY KEY,
@@ -128,8 +129,6 @@ CREATE TABLE Fees (
     FOREIGN KEY (Student_ID) REFERENCES Student(Student_ID)
 );
 
--- Junction Tables for Many-to-Many Relationships
-
 -- 13. Student_Course (Enrollment)
 CREATE TABLE Student_Course (
     Student_ID INT,
@@ -180,8 +179,6 @@ CREATE TABLE Book_Taken (
     FOREIGN KEY (Book_ID) REFERENCES Book(Book_ID)
 );
 
--- Insert Sample Data
-
 -- Departments
 INSERT INTO Department (Department_ID, Department_name, HOD, Establishment_date) VALUES
 (1, 'Computer Science', 'Dr. Alan Turing', '2000-09-01'),
@@ -210,16 +207,16 @@ INSERT INTO Course (Course_ID, Course_name, Duration, Credits, Department_ID) VA
 
 -- Hostels
 INSERT INTO Hostel (Hostel_ID, Hostel_name, Capacity, Warden_name) VALUES
-(1, 'Turing Hall', 200, 'Mr. John Nash'),
-(2, 'Tesla Hall', 150, 'Ms. Marie Curie'),
-(3, 'Newton Hall', 180, 'Mr. Stephen Hawking'),
-(4, 'Da Vinci Hall', 160, 'Ms. Rosalind Franklin'),
-(5, 'Einstein Hall', 190, 'Mr. Richard Feynman'),
-(6, 'Ramanujan Hall', 170, 'Ms. Emmy Noether'),
-(7, 'Curie Hall', 140, 'Mr. Linus Pauling'),
-(8, 'Darwin Hall', 130, 'Ms. Jane Goodall'),
-(9, 'Smith Hall', 120, 'Mr. Milton Friedman'),
-(10, 'Freud Hall', 110, 'Ms. Anna Freud');
+(1, 'Tesla', 200, 'Mr. John Nash'),
+(2, 'Rolls-Royce', 150, 'Ms. Marie Curie'),
+(3, 'Lamborghini', 180, 'Mr. Stephen Hawking'),
+(4, 'Tesla', 160, 'Mr. John Nash'),          
+(5, 'Rolls-Royce', 190, 'Ms. Marie Curie'),   
+(6, 'Lamborghini', 170, 'Mr. Stephen Hawking'), 
+(7, 'Tesla', 140, 'Mr. John Nash'),     
+(8, 'Rolls-Royce', 130, 'Ms. Marie Curie'),   
+(9, 'Lamborghini', 120, 'Mr. Stephen Hawking'), 
+(10, 'Tesla', 110, 'Mr. John Nash');       
 
 -- Students
 INSERT INTO Student (Student_ID, Name, DOB, Address, Phone_no, Email, Enrollment_date, Department_ID, Hostel_ID) VALUES
@@ -367,42 +364,40 @@ INSERT INTO Student_Exam (Student_ID, Exam_ID, Score) VALUES
 -- Faculty_Subject
 INSERT INTO Faculty_Subject (Faculty_ID, Subject_ID) VALUES
 (1, 1),
-(1, 2),  -- Faculty 1 also handles Subject 2
+(1, 2), 
 (2, 2),
-(2, 3),  -- Faculty 2 also handles Subject 3
+(2, 3), 
 (3, 3),
-(3, 4),  -- Faculty 3 also handles Subject 4
+(3, 4), 
 (4, 4),
-(4, 5),  -- Faculty 4 also handles Subject 5
+(4, 5),
 (5, 5),
-(5, 6),  -- Faculty 5 also handles Subject 6
+(5, 6),  
 (6, 6),
-(6, 7),  -- Faculty 6 also handles Subject 7
+(6, 7),  
 (7, 7),
 (8, 8),
 (9, 9),
 (10, 10),
-(10, 1); -- Faculty 10 also handles Subject 1
-
+(10, 1);
 
 -- Student_Event
 INSERT INTO Student_Event (Student_ID, Event_ID) VALUES
 (1, 1),
-(1, 2),  -- Student 1 also participates in Event 2
+(1, 2),  
 (2, 2),
-(2, 3),  -- Student 2 also participates in Event 3
+(2, 3), 
 (3, 3),
-(3, 4),  -- Student 3 also participates in Event 4
+(3, 4), 
 (4, 4),
 (5, 5),
 (6, 6),
-(6, 7),  -- Student 6 also participates in Event 7
+(6, 7), 
 (7, 7),
 (8, 8),
 (9, 9),
-(9, 10), -- Student 9 also participates in Event 10
+(9, 10), 
 (10, 10);
-
 
 -- Book_Taken
 INSERT INTO Book_Taken (Taken_ID, Student_ID, Book_ID, Borrow_Date, Due_Date, Return_Date) VALUES
@@ -417,51 +412,49 @@ INSERT INTO Book_Taken (Taken_ID, Student_ID, Book_ID, Borrow_Date, Due_Date, Re
 (9, 9, 9, '2024-09-22', '2024-10-06', '2024-10-05'),
 (10, 10, 10, '2024-09-23', '2024-10-07', NULL);
 
--- Example Queries to Demonstrate Relationships and JOINs
-
--- 1. List all students with their department and hostel information
+-- 1. List all the students with their department and hostel information
 SELECT s.Student_ID, s.Name, d.Department_name, h.Hostel_name
 FROM Student s
 JOIN Department d ON s.Department_ID = d.Department_ID
 JOIN Hostel h ON s.Hostel_ID = h.Hostel_ID;
 
--- 2. Show all courses with their respective department
+-- 2. Show all the courses with their respective department
 SELECT c.Course_ID, c.Course_name, d.Department_name
 FROM Course c
 JOIN Department d ON c.Department_ID = d.Department_ID;
 
--- 3. List all faculty members with their department and subjects they teach
+-- 3. List all the faculty members with their department and subjects they teach
 SELECT f.Name AS Faculty_Name, d.Department_name, s.Subject_name
 FROM Faculty f
 JOIN Department d ON f.Department_ID = d.Department_ID
 JOIN Faculty_Subject fs ON f.Faculty_ID = fs.Faculty_ID
 JOIN Subject s ON fs.Subject_ID = s.Subject_ID;
 
--- 4. Show all students enrolled in a specific course
+-- 4. Show all the students enrolled in a specific course
 SELECT s.Name AS Student_Name, c.Course_name
 FROM Student s
 JOIN Student_Course sc ON s.Student_ID = sc.Student_ID
 JOIN Course c ON sc.Course_ID = c.Course_ID
 WHERE c.Course_name = 'Bachelor of Computer Science';
 
--- 5. Display exam results for all students
+-- 5. Display the exam results for all students
 SELECT s.Name AS Student_Name, e.Exam_name, se.Score
 FROM Student s
 JOIN Student_Exam se ON s.Student_ID = se.Student_ID
 JOIN Exam e ON se.Exam_ID = e.Exam_ID;
 
--- 6. List all books borrowed by students
+-- 6. List all the books borrowed by students
 SELECT s.Name AS Student_Name, b.Title AS Book_Title, bl.Borrow_Date, bl.Due_Date, bl.Return_Date
 FROM Student s
 JOIN Book_Taken bl ON s.Student_ID = bl.Student_ID
 JOIN Book b ON bl.Book_ID = b.Book_ID;
 
--- 7. Show all events and the departments organizing them
+-- 7. Show all the events and the departments organizing them
 SELECT e.Event_name, d.Department_name
 FROM Event e
 JOIN Department d ON e.Department_ID = d.Department_ID;
 
--- 8. Display fee information for all students
+-- 8. Display the fee information for all students
 SELECT s.Name AS Student_Name, f.Amount, f.Fee_type, f.Due_date, f.Payment_status
 FROM Student s
 JOIN Fees f ON s.Student_ID = f.Student_ID;
